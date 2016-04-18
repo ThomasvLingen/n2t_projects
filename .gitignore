@@ -1,0 +1,4 @@
+# HDL simulator files
+*.cmp
+*.tst
+*.out
