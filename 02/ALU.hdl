@@ -81,6 +81,14 @@ CHIP ALU {
 
     Mux16(
         a=xyOpped,b=xyOppedNegated,sel=no,
-        out=out
+        out=out,
+        out[0..7]=output07,out[8..15]=output815,
+        out[15]=ng
     );
+
+    // STATUS PROCESSING
+    Or8Way(in=output07, out=output07NotZero);
+    Or8Way(in=output815,out=output815NotZero);
+    Or(a=output07NotZero,b=output815NotZero,out=outputNotZero);
+    Not(in=outputNotZero,out=zr);
 }
