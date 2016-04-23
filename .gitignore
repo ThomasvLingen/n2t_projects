@@ -5,3 +5,8 @@
 
 # HACK machine code
 *.hack
+
+# Python stuff
+*.pyc
+.idea
+__python_cache__
