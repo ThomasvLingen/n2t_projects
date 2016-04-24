@@ -103,15 +103,18 @@ class HackParser():
 
     def parse_C(self):
         line = copy.deepcopy(self.current_line())
-        dest = ""
-        jump = ""
 
         equals_index = line.find('=')
         semicolon_index = line.find(';')
 
+        if equals_index == -1 and semicolon_index == -1:
+            print("Syntax error: unrecognised sentence structure at line {}".format(self.current_line_index+1))
+
         if equals_index != -1:
             dest = line[0:equals_index]
             line = line[equals_index+1:]
+        else:
+            dest=""
 
         if semicolon_index != -1:
             comp = line[0:semicolon_index]
@@ -119,6 +122,7 @@ class HackParser():
             jump = line
         else:
             comp=line
+            jump=""
 
         dest_component = self.instruction.dest(dest)
         comp_component = self.instruction.comp(comp)
