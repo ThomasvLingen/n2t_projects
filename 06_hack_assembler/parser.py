@@ -16,7 +16,7 @@ class HackParser():
         self.input = input_file.readlines()
         input_file.close()
 
-        self.output_file_path = os.path.splitext(input_file_path)[0] + ".hack"
+        self.output_file_path = self.get_out_path(input_file_path)
         self.output = []
 
         self.current_line_index = 0
@@ -143,6 +143,12 @@ class HackParser():
             return "L"
         else:
             return "C"
+
+    def get_out_path(self, input_file_path):
+        output_file_path = os.getcwd()
+        output_file_path += os.path.sep
+        output_file_path += os.path.splitext(os.path.basename(input_file_path))[0] + ".hack"
+        return output_file_path
 
     def current_line(self):
         return self.input[self.current_line_index]
