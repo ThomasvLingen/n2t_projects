@@ -5,21 +5,17 @@ import copy
 
 from instruction import Instruction
 from symbol_table import SymbolTable
+from translator import Translator
 
-class HackParser():
+class HackParser(Translator):
 
     instruction = Instruction()
     symbol_table = SymbolTable()
 
     def __init__(self, input_file_path):
-        input_file = open(input_file_path, 'r')
-        self.input = input_file.readlines()
-        input_file.close()
+        super().__init__(input_file_path)
 
-        self.output_file_path = self.get_out_path(input_file_path)
-        self.output = []
-
-        self.current_line_index = 0
+        self.output_file_path = self.get_out_path(input_file_path, ".hack")
 
         self.preprocess()
         self.assemble()
@@ -143,21 +139,3 @@ class HackParser():
             return "L"
         else:
             return "C"
-
-    def get_out_path(self, input_file_path):
-        output_file_path = os.getcwd()
-        output_file_path += os.path.sep
-        output_file_path += os.path.splitext(os.path.basename(input_file_path))[0] + ".hack"
-        return output_file_path
-
-    def current_line(self):
-        return self.input[self.current_line_index]
-
-    def has_more_commands(self):
-        return self.current_line_index < len(self.input)
-
-    def save_to_file(self):
-        output_file = open(self.output_file_path, 'w')
-
-        for line in self.output:
-            output_file.write("{}\n".format(line))
