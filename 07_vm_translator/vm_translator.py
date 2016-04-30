@@ -1,18 +1,8 @@
 __author__ = 'mafn'
 
 from translator import Translator
-from enum import Enum
-
-class CommandType(Enum):
-    C_ARITH = 1
-    C_PUSH = 2
-    C_POP = 3
-    C_LABEL = 4
-    C_GOTO = 5
-    C_IF = 6
-    C_FUNCTION = 7
-    C_RETURN = 8
-    C_CALL = 9
+from code_writer import CodeWriter
+from command_type import CommandType
 
 class VmTranslator(Translator):
 
