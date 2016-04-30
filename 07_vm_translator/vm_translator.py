@@ -66,7 +66,7 @@ class VmTranslator(Translator):
                 elif not arg1 and not arg2:
                     print("{}()".format(command_type))
 
-                self.current_line_index += 1
+            self.current_line_index += 1
 
     def get_command_type(self):
         if len(self.current_command) == 1 and self.current_command[0] in self.arithmetic_keywords:
