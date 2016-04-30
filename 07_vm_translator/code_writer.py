@@ -7,6 +7,8 @@ class CodeWriter():
     def __init__(self, output):
         self.output = output
 
+        self.arith_label_counter = 0
+
     def write_program_init(self):
         self._write_set_register("SP", 256)
 
@@ -18,18 +20,51 @@ class CodeWriter():
             self._write_increment_sp()
 
     def write_arithmetic(self, command):
+        if command not in ["neg", "not"]:
+            self._load_stack_top_2()
+        else:
+            self._load_stack_top_1()
+
+        if command in ["eq", "gt", "lt"]:
+            arith_label = self._generate_arith_label()
+
+        if command == "add":
+            self._write_commands("M=M+D")
+        if command == "sub":
+            self._write_commands("M=M-D")
+        if command == "neg":
+            self._write_commands("M=-M")
+        if command == "eq":
+            self._write_commands(
+                "D=M-D",
+                "M=0",
+                "@{}".format(arith_label),
+                "D;JEQ"
+            )
+            self._write_set_address_to_sp()
+            self._write_commands(
+                "M=-1",
+                "({})".format(arith_label)
+            )
+
+        self._write_increment_sp()
+
+    def _load_stack_top_2(self):
         # Put top number in D
         self._write_decrement_sp()
         self._write_set_address_to_sp()
         self._write_commands("D=M")
+        self._load_stack_top_1()
+
+    def _load_stack_top_1(self):
         # Put bottom number in M
         self._write_decrement_sp()
         self._write_set_address_to_sp()
 
-        if command == "add":
-            self._write_commands("M=M+D")
-
-        self._write_increment_sp()
+    def _generate_arith_label(self):
+        label = "al_" + str(self.arith_label_counter)
+        self.arith_label_counter += 1
+        return label
 
     def _write_increment_register(self, register):
         self._write_commands(
