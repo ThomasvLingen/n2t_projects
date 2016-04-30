@@ -34,16 +34,46 @@ class CodeWriter():
             self._write_commands("M=M-D")
         if command == "neg":
             self._write_commands("M=-M")
+        if command == "and":
+            self._write_commands("M=M&D")
+        if command == "or":
+            self._write_commands("M=M|D")
+        if command == "not":
+            self._write_commands("M=!M")
         if command == "eq":
             self._write_commands(
                 "D=M-D",
-                "M=0",
+                "M=-1",
                 "@{}".format(arith_label),
                 "D;JEQ"
             )
             self._write_set_address_to_sp()
             self._write_commands(
+                "M=0",
+                "({})".format(arith_label)
+            )
+        if command == "gt":
+            self._write_commands(
+                "D=M-D",
                 "M=-1",
+                "@{}".format(arith_label),
+                "D;JGT"
+            )
+            self._write_set_address_to_sp()
+            self._write_commands(
+                "M=0",
+                "({})".format(arith_label)
+            )
+        if command == "lt":
+            self._write_commands(
+                "D=D-M",
+                "M=-1",
+                "@{}".format(arith_label),
+                "D;JGT"
+            )
+            self._write_set_address_to_sp()
+            self._write_commands(
+                "M=0",
                 "({})".format(arith_label)
             )
 
