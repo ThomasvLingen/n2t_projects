@@ -10,6 +10,7 @@ class VmTranslator(Translator):
 
     def __init__(self, input_file_path):
         super().__init__(input_file_path)
+        self.writer = CodeWriter(self.output)
 
         self.output_file_path = self.get_out_path(input_file_path, ".vm.asm")
 
@@ -37,26 +38,30 @@ class VmTranslator(Translator):
             self.current_command = self.current_line().split(' ')
 
             if len(self.current_command) > 0:
-                command_type = self.get_command_type()
-
-                if not command_type == CommandType.C_RETURN:
-                    arg1 = self.get_arg1(command_type)
-                else:
-                    arg1 = ""
-
-                if command_type in [CommandType.C_PUSH, CommandType.C_PUSH, CommandType.C_FUNCTION, CommandType.C_CALL]:
-                    arg2 = self.get_arg2(command_type)
-                else:
-                    arg2 = ""
-
-                if arg1 and arg2:
-                    print("{}({} {})".format(command_type, arg1, arg2))
-                elif arg1 and not arg2:
-                    print("{}({})".format(command_type, arg1))
-                elif not arg1 and not arg2:
-                    print("{}()".format(command_type))
+                self.translate_command()
 
             self.current_line_index += 1
+
+        self.save_to_file()
+
+    def translate_command(self):
+        command_type = self.get_command_type()
+
+        if not command_type == CommandType.C_RETURN:
+            arg1 = self.get_arg1(command_type)
+        else:
+            arg1 = ""
+
+        if command_type in [CommandType.C_PUSH, CommandType.C_PUSH, CommandType.C_FUNCTION, CommandType.C_CALL]:
+            arg2 = self.get_arg2(command_type)
+        else:
+            arg2 = ""
+
+        if command_type == CommandType.C_ARITH and arg1:
+            self.writer.write_arithmetic(arg1)
+
+        if command_type in [CommandType.C_PUSH, CommandType.C_POP] and arg1 and arg2:
+            self.writer.write_push_pop(command_type, arg1, arg2)
 
     def get_command_type(self):
         if len(self.current_command) == 1 and self.current_command[0] in self.arithmetic_keywords:
