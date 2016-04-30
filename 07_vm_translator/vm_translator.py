@@ -34,6 +34,8 @@ class VmTranslator(Translator):
         self.input = [line for line in self.input if line != ""]
 
     def translate(self):
+        self.writer.write_program_init()
+
         while self.has_more_commands():
             self.current_command = self.current_line().split(' ')
 

@@ -45,7 +45,7 @@ class CodeWriter():
 
     def _write_set_register(self, register, value):
         self._write_commands(
-            "@" + value,
+            "@" + str(value),
             "D=A",
             "@" + register,
             "M=D"
@@ -53,7 +53,7 @@ class CodeWriter():
 
     def _write_stack(self, value):
         self._write_commands(
-            "@" + value,
+            "@" + str(value),
             "D=A",
             "@SP",
             "A=M",
