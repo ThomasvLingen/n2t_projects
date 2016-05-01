@@ -4,6 +4,13 @@ from command_type import CommandType
 
 
 class CodeWriter():
+    base_pointer_map = {
+        "local": "LCL",
+        "argument": "ARG",
+        "this": "THIS",
+        "that": 'THAT'
+    }
+
     def __init__(self, output):
         self.output = output
 
@@ -11,10 +18,27 @@ class CodeWriter():
 
     def write_program_init(self):
         self._write_set_register("SP", 256)
+        self._write_set_register("LCL", 300)
+        self._write_set_register("ARG", 400)
+        self._write_set_register("THIS", 3000)
+        self._write_set_register("THAT", 3010)
 
     def write_push_pop(self, command, segment, index):
+        if command == CommandType.C_POP:
+            self._write_decrement_sp()
+
         if segment == "constant":
             self._write_stack(index)
+
+        if segment in ["local", "argument", "this", "that"]:
+            base_pointer = self._get_base_pointer(segment)
+
+            if command == CommandType.C_POP:
+                print("POPPING {} {}".format(segment, index))
+                self._write_segment_from_stack(base_pointer, index)
+            if command == CommandType.C_PUSH:
+                print("PUSHING {} {}".format(segment, index))
+                self._write_segment_to_stack(base_pointer, index)
 
         if command == CommandType.C_PUSH:
             self._write_increment_sp()
@@ -79,6 +103,9 @@ class CodeWriter():
 
         self._write_increment_sp()
 
+    def _get_base_pointer(self, segment):
+        return self.base_pointer_map[segment]
+
     def _load_stack_top_2(self):
         # Put top number in D
         self._write_decrement_sp()
@@ -122,6 +149,36 @@ class CodeWriter():
             "D=A",
             "@SP",
             "A=M",
+            "M=D"
+        )
+
+    def _write_segment_from_stack(self, base, index):
+        self._write_commands(
+            "@" + index,
+            "D=A",          # load index into D
+            "@" + base,     # Go to current base
+            "D=D+M",        # D = index + base
+            "@R15",
+            "M=D"           # R15 = destination address
+        )
+        self._write_set_address_to_sp()
+        self._write_commands(
+            "D=M",          # D = stack value
+            "@R15",
+            "A=M",          # A = dest
+            "M=D"           # destination = stack value
+        )
+
+    def _write_segment_to_stack(self, base, index):
+        self._write_commands(
+            "@" + index,
+            "D=A",          # load index into D
+            "@" + base,     # Go to current base
+            "A=M+D",        # A = destination address
+            "D=M"           # D = destination contents
+        )
+        self._write_set_address_to_sp()
+        self._write_commands(
             "M=D"
         )
 

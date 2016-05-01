@@ -54,7 +54,7 @@ class VmTranslator(Translator):
         else:
             arg1 = ""
 
-        if command_type in [CommandType.C_PUSH, CommandType.C_PUSH, CommandType.C_FUNCTION, CommandType.C_CALL]:
+        if command_type in [CommandType.C_PUSH, CommandType.C_POP, CommandType.C_FUNCTION, CommandType.C_CALL]:
             arg2 = self.get_arg2(command_type)
         else:
             arg2 = ""
@@ -87,7 +87,7 @@ class VmTranslator(Translator):
             return self.current_command[1]
 
     def get_arg2(self, command_type):
-        if command_type not in [CommandType.C_PUSH, CommandType.C_PUSH, CommandType.C_FUNCTION, CommandType.C_CALL]:
+        if command_type not in [CommandType.C_PUSH, CommandType.C_POP, CommandType.C_FUNCTION, CommandType.C_CALL]:
             print("WARNING: arg2 SHOULD NOT BE CALLED! LINE: {}".format(self.current_line_index))
 
         if self.current_command[2].isdigit():
