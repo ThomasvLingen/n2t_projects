@@ -35,10 +35,8 @@ class CodeWriter():
             base_pointer = self._get_base_pointer(segment)
 
             if command == CommandType.C_POP:
-                print("POPPING {} {}".format(segment, index))
                 self._write_segment_from_stack(base_pointer, index)
             if command == CommandType.C_PUSH:
-                print("PUSHING {} {}".format(segment, index))
                 self._write_segment_to_stack(base_pointer, index)
 
         if command == CommandType.C_PUSH:
