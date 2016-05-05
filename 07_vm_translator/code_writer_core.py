@@ -1,8 +1,19 @@
 __author__ = 'mafn'
 
 class CodeWriterCore():
+    base_pointer_map = {
+        "local": "LCL",
+        "argument": "ARG",
+        "this": "THIS",
+        "that": "THAT",
+        "temp": "temp"
+    }
+
     def __init__(self, target_output):
         self.output = target_output
+
+    def _get_base_pointer(self, segment):
+        return self.base_pointer_map[segment]
 
     def _load_stack_top_2(self):
         # Put top number in D
@@ -43,3 +54,20 @@ class CodeWriterCore():
 
     def _write_command(self, command):
         self.output.append(command)
+
+    def _write_stack(self, value):
+        self._write_commands(
+            "@" + str(value),
+            "D=A",
+            "@SP",
+            "A=M",
+            "M=D"
+        )
+
+    def _write_set_register(self, register, value):
+        self._write_commands(
+            "@" + str(value),
+            "D=A",
+            "@" + register,
+            "M=D"
+        )
