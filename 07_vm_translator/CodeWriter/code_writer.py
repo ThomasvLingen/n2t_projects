@@ -1,9 +1,9 @@
 __author__ = 'mafn'
 
-from code_writer_core import CodeWriterCore
+from CodeWriter.code_writer_core import CodeWriterCore
 
-from arithmetic_writer import ArithMethicWriter
-from push_pop_writer import PushPopWriter
+from CodeWriter.arithmetic_writer import ArithMethicWriter
+from CodeWriter.push_pop_writer import PushPopWriter
 
 class CodeWriter(CodeWriterCore):
 

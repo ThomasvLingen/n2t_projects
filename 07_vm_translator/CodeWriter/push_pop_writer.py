@@ -1,6 +1,6 @@
 __author__ = 'mafn'
 
-from code_writer_core import CodeWriterCore
+from CodeWriter.code_writer_core import CodeWriterCore
 from command_type import CommandType
 
 class PushPopWriter(CodeWriterCore):

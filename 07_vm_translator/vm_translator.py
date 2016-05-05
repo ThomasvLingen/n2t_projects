@@ -1,7 +1,7 @@
 __author__ = 'mafn'
 
 from translator import Translator
-from code_writer import CodeWriter
+from CodeWriter.code_writer import CodeWriter
 from command_type import CommandType
 
 class VmTranslator(Translator):
