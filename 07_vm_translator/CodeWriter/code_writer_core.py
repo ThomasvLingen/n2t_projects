@@ -6,7 +6,8 @@ class CodeWriterCore():
         "argument": "ARG",
         "this": "THIS",
         "that": "THAT",
-        "temp": "temp"
+        "temp": "temp",
+        "pointer": "pointer"
     }
 
     def __init__(self, target_output):
@@ -70,4 +71,10 @@ class CodeWriterCore():
             "D=A",
             "@" + register,
             "M=D"
+        )
+
+    def _write_address_contents_in_D(self, address):
+        self._write_commands(
+            "@" + str(address),
+            "D=M"
         )

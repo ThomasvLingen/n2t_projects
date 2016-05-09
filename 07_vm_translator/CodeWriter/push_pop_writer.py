@@ -14,7 +14,7 @@ class PushPopWriter(CodeWriterCore):
         if segment == "constant":
             self._write_stack(index)
 
-        if segment in ["local", "argument", "this", "that", "temp"]:
+        if segment in ["local", "argument", "this", "that", "temp", "pointer"]:
             base_pointer = self._get_base_pointer(segment)
 
             if command == CommandType.C_POP:
@@ -35,6 +35,14 @@ class PushPopWriter(CodeWriterCore):
             "M=D"           # destination = stack value
         )
 
+    def _write_to_r15(self, value):
+        self._write_commands(
+                "@" + str(value),
+                "D=A",
+                "@R15",
+                "M=D"
+        )
+
     def _write_dest_in_r15(self, base, index):
         if base in ["LCL", "ARG", "THIS", "THAT"]:
             self._write_commands(
@@ -47,12 +55,12 @@ class PushPopWriter(CodeWriterCore):
             )
         if base == "temp":
             destination_address = 5 + int(index)
-            self._write_commands(
-                "@" + str(destination_address),
-                "D=A",
-                "@R15",
-                "M=D"
-            )
+            self._write_to_r15(destination_address)
+        if base == "pointer":
+            if int(index) == 0:
+                self._write_to_r15(3)
+            if int(index) == 1:
+                self._write_to_r15(4)
 
     def _write_segment_to_stack(self, base, index):
         self._write_dest_contents_in_D(base, index)
@@ -76,3 +84,8 @@ class PushPopWriter(CodeWriterCore):
                 "@" + str(destination_address),
                 "D=M"
             )
+        if base == "pointer":
+            if int(index) == 0:
+                self._write_address_contents_in_D(3)
+            if int(index) == 1:
+                self._write_address_contents_in_D(4)
