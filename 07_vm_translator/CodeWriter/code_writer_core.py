@@ -7,7 +7,8 @@ class CodeWriterCore():
         "this": "THIS",
         "that": "THAT",
         "temp": "temp",
-        "pointer": "pointer"
+        "pointer": "pointer",
+        "static": "static"
     }
 
     def __init__(self, target_output):

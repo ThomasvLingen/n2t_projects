@@ -7,12 +7,13 @@ from CodeWriter.push_pop_writer import PushPopWriter
 
 class CodeWriter(CodeWriterCore):
 
-    def __init__(self, output):
+    def __init__(self, output, filename):
         super().__init__(output)
         self.output = output
+        self.filename = filename
 
         self.arith_writer = ArithMethicWriter(self.output)
-        self.push_pop_writer = PushPopWriter(self.output)
+        self.push_pop_writer = PushPopWriter(self.output, filename)
 
     def write_program_init(self):
         self._write_set_register("SP", 256)

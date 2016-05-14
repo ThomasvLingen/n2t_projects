@@ -4,8 +4,9 @@ from CodeWriter.code_writer_core import CodeWriterCore
 from command_type import CommandType
 
 class PushPopWriter(CodeWriterCore):
-    def __init__(self, parent_output):
+    def __init__(self, parent_output, filename):
         super().__init__(parent_output)
+        self.filename = filename
 
     def write_push_pop(self, command, segment, index):
         if command == CommandType.C_POP:
@@ -14,7 +15,7 @@ class PushPopWriter(CodeWriterCore):
         if segment == "constant":
             self._write_stack(index)
 
-        if segment in ["local", "argument", "this", "that", "temp", "pointer"]:
+        if segment in ["local", "argument", "this", "that", "temp", "pointer", "static"]:
             base_pointer = self._get_base_pointer(segment)
 
             if command == CommandType.C_POP:
@@ -61,6 +62,9 @@ class PushPopWriter(CodeWriterCore):
                 self._write_to_r15(3)
             if int(index) == 1:
                 self._write_to_r15(4)
+        if base == "static":
+            destination_address = str("{}.{}".format(self.filename, index))
+            self._write_to_r15(destination_address)
 
     def _write_segment_to_stack(self, base, index):
         self._write_dest_contents_in_D(base, index)
@@ -89,3 +93,6 @@ class PushPopWriter(CodeWriterCore):
                 self._write_address_contents_in_D(3)
             if int(index) == 1:
                 self._write_address_contents_in_D(4)
+        if base == "static":
+            destination_address = str("{}.{}".format(self.filename, index))
+            self._write_address_contents_in_D(destination_address)

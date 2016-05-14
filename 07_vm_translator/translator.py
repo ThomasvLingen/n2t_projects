@@ -16,8 +16,11 @@ class Translator:
     def get_out_path(self, input_file_path, extension):
         output_file_path = os.getcwd()
         output_file_path += os.path.sep
-        output_file_path += os.path.splitext(os.path.basename(input_file_path))[0] + extension
+        output_file_path += self.get_filename(input_file_path) + extension
         return output_file_path
+
+    def get_filename(self, input_file_path):
+        return os.path.splitext(os.path.basename(input_file_path))[0]
 
     def current_line(self):
         return self.input[self.current_line_index]
