@@ -2,7 +2,7 @@
 __author__ = 'mafn'
 
 import sys
-from vm_translator import VmTranslator
+from vm_file_translator import VmFileTranslator
 
 if __name__ == "__main__":
     if not len(sys.argv) == 2:
@@ -11,4 +11,4 @@ if __name__ == "__main__":
 
     filename = sys.argv[1]
 
-    translator = VmTranslator(filename)
+    translator = VmFileTranslator(filename)

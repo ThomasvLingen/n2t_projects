@@ -4,15 +4,16 @@ from translator import Translator
 from CodeWriter.code_writer import CodeWriter
 from command_type import CommandType
 
-class VmTranslator(Translator):
+class VmFileTranslator(Translator):
 
     arithmetic_keywords = ["add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not"]
 
     def __init__(self, input_file_path):
         super().__init__(input_file_path)
-        self.writer = CodeWriter(self.output)
-
+        self.filename = self.get_filename(input_file_path)
         self.output_file_path = self.get_out_path(input_file_path, ".vm.asm")
+
+        self.writer = CodeWriter(self.output, self.filename)
 
         self.preprocess()
         self.translate()
